@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+ng lint
+npm run stylelint
+ng test --watch=false --progress=false --browsers=ChromeHeadless
