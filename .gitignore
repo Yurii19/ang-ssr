@@ -13,6 +13,8 @@
 npm-debug.log
 yarn-error.log
 
+.nx
+
 # IDEs and editors
 .idea/
 .project
