@@ -16,49 +16,62 @@ export class PlayerComponent implements OnInit {
     '/assets/letilasoya/t2.mp3',
     '/assets/letilasoya/t3.mp3',
   ];
-  audioElement: HTMLAudioElement | undefined;
-  audioElement1: HTMLAudioElement | undefined;
-  audioElement2: HTMLAudioElement | undefined;
 
   audioContext: AudioContext | undefined;
-  source!: NonNullable<unknown>;
+  sources:AudioBufferSourceNode[] = [];
   track: MediaElementAudioSourceNode | undefined;
   gainNode!: GainNode | undefined;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: NonNullable<unknown>,
-   // public http: HttpClient
+    @Inject(PLATFORM_ID) private platformId: NonNullable<unknown> // public http: HttpClient
   ) {}
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       const AudioContext = window.AudioContext;
       this.audioContext = new AudioContext();
-      this.audioElement = new Audio(this.audioFile);
-      this.track = this.audioContext.createMediaElementSource(
-        this.audioElement
-      );
-      // track.connect(this.audioContext.destination);
-
       this.gainNode = this.audioContext.createGain();
-      this.track.connect(this.gainNode).connect(this.audioContext.destination);
-      // gainNode.gain.value = 3;
-      // console.log();
-      //audioElement.play()
-      // track.play()
     }
-
-    //const file = this.http.get(this.files[0]).subscribe((d: any) => console.log(d))
-    //const localBuffer = this.files[0].arrayBuffer()
-    // fetch(this.files[0]).then(r => console.log(r))
   }
 
-  // playAudio(buffer: any){
+  launchAudio() {
+    this.files.forEach(url =>{
+      this.loadAudioFile(url)
+      .then((buffer) => {
+        if(buffer)
+        this.playAudio(buffer);
+      })
+      .catch((error) => {
+        console.error('Error loading audio:', error);
+      });
 
-  // }
+    })
+   
+  }
+
+  playAudio(buffer: AudioBuffer) {
+    if (this.audioContext && buffer) {
+      const source = this.audioContext.createBufferSource();
+      source.buffer = buffer;
+      this.sources.push(source)
+      if(this.gainNode){
+        source.connect(this.gainNode).connect(this.audioContext.destination);
+        
+      }
+      source.start(0);
+    }
+  }
+
+  loadAudioFile(url: string) {
+    return fetch(url)
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => {
+        if (this.audioContext === undefined) return;
+        return this.audioContext.decodeAudioData(buffer);
+      });
+  }
 
   changeGain(ev: Event) {
-    // console.log(ev.target.value);
     const input = ev.target as HTMLInputElement;
     const newValue = Number.parseFloat(input.value);
     if (this.gainNode !== undefined) {
@@ -66,15 +79,13 @@ export class PlayerComponent implements OnInit {
     }
   }
 
+
+
   play() {
-    if (typeof this.audioElement !== 'undefined') {
-      this.audioElement.play();
-    }
-    console.log(this.audioContext);
+    this.launchAudio();
   }
+
   pause() {
-    if (typeof this.audioElement !== 'undefined') {
-      this.audioElement.pause();
-    }
+    this.sources.forEach(src => src.stop())
   }
 }

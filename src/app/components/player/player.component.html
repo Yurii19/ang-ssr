@@ -1,4 +1,4 @@
 <p>player works!</p>
-<button (click)="play()">PLAY</button>
-<button (click)="pause()">PAUSE</button>
+<button class="button play" (click)="play()">PLAY</button>
+<button class="button stop" (click)="pause()">STOP</button>
 <input type="range" id="volume" min="0" max="2" value="1" step="0.01" (input)="changeGain($event)"/>
