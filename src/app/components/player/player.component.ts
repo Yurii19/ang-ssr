@@ -1,10 +1,12 @@
 import { isPlatformBrowser } from '@angular/common';
 //import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChannelComponent } from './channel/channel.component';
 
 @Component({
   selector: 'app-player',
   standalone: true,
+  imports: [ChannelComponent],
   templateUrl: './player.component.html',
   styleUrl: './player.component.scss',
 })
@@ -39,8 +41,6 @@ export class PlayerComponent implements OnInit {
     if (buffer) {
       this.playAudio(buffer);
     }
-
-   
   }
 
   playAudio(buffer: AudioBuffer) {
