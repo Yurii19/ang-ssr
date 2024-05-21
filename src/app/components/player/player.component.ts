@@ -34,7 +34,28 @@ export class PlayerComponent implements OnInit {
     }
   }
 
-  async mergeBuffers() {
+  async launchAudio() {
+    const buffer = await this.mergeBuffers();
+    if (buffer) {
+      this.playAudio(buffer);
+    }
+
+   
+  }
+
+  playAudio(buffer: AudioBuffer) {
+    if (this.audioContext && buffer) {
+      const source = this.audioContext.createBufferSource();
+      source.buffer = buffer;
+      this.sources.push(source);
+      if (this.gainNode) {
+        source.connect(this.gainNode).connect(this.audioContext.destination);
+      }
+      source.start(5);
+    }
+  }
+
+  private async mergeBuffers() {
     const tracks: AudioBuffer[] = [];
 
     for await (const url of this.files) {
@@ -44,7 +65,6 @@ export class PlayerComponent implements OnInit {
       }
     }
 
-    console.log(tracks);
     const firstTrack = tracks[0];
     const duration =
       firstTrack && firstTrack.duration ? firstTrack.duration : 0;
@@ -64,44 +84,11 @@ export class PlayerComponent implements OnInit {
     for (let channel = 0; channel < numberOfChannels; channel++) {
       const nowBuffering = newBuffer.getChannelData(channel);
       const srcBuffer = tracks[channel].getChannelData(0);
-      // console.log(channel, ' < < < ', srcBuffer);
       for (let i = 0; i < frameCount; i++) {
         nowBuffering[i] = srcBuffer[i];
-        // console.log(srcBuffer[i])
       }
     }
-    console.log(newBuffer);
     return newBuffer;
-  }
-
-  async launchAudio() {
-    const buffer = await this.mergeBuffers();
-    console.log(buffer);
-    if (buffer) {
-      this.playAudio(buffer);
-    }
-
-    // this.files.forEach((url) => {
-    //   this.loadAudioFile(url)
-    //     .then((buffer) => {
-    //       if (buffer) this.playAudio(buffer);
-    //     })
-    //     .catch((error) => {
-    //       console.error('Error loading audio:', error);
-    //     });
-    // });
-  }
-
-  playAudio(buffer: AudioBuffer) {
-    if (this.audioContext && buffer) {
-      const source = this.audioContext.createBufferSource();
-      source.buffer = buffer;
-      this.sources.push(source);
-      if (this.gainNode) {
-        source.connect(this.gainNode).connect(this.audioContext.destination);
-      }
-      source.start(5);
-    }
   }
 
   async loadAudioFile(url: string) {
