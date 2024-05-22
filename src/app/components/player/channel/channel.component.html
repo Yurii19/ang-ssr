@@ -1,13 +1,14 @@
 <div class="channel">
-  <span>{{ name }}</span>
-  <button (click)="mute(name)">Mute</button>
+  <span>Channel: {{ name }}</span>
+  <button class="c-btn" (click)="mute(name)">
+    <i class="fa-solid fa-volume-xmark"></i>Mute
+  </button>
   <input
-  type="range"
+    type="range"
     id="volume"
     min="0"
     max="2"
     [value]="soundLevel"
     step="0.01"
-    
   />
 </div>

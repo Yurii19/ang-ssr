@@ -18,11 +18,11 @@ import {
 export class ChannelComponent {
   @Input() soundLevel: number = 0;
 
-  @Input() name: string = '';
+  @Input() name: number = 0;
 
-  @Output() muteChannel = new EventEmitter<string>();
+  @Output() muteChannel = new EventEmitter<number>();
 
-  mute(event: string) {
+  mute(event: number) {
     this.muteChannel.emit(event);
   }
 }

@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+$primary-color: #ffb000;
+$secondary-color: #ffcf9d;
+$light-color: #f5f5dc;
+
+.c-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: $primary-color;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 5px;
+  &:hover {
+    opacity: 0.8;
+  }
+  &:active {
+    box-shadow: 2px 2px 5px grey;
+  }
+}

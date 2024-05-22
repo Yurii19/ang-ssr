@@ -1,17 +1,25 @@
-<p>player works!</p>
 <h2>{{ currentTime | date : "mm : ss" }}</h2>
 <h2>{{ startTime | date : "EEEE, MMMM dd -  hh : mm : ss" }}</h2>
-<button class="button play" (click)="play()">PLAY</button>
-<button class="button stop" (click)="pause()">STOP</button>
-<input
-  type="range"
-  id="volume"
-  min="0"
-  max="2"
-  value="1"
-  step="0.01"
-  (input)="changeGain($event)"
-/>
-<div *ngFor="let channel of files">
-  <app-channel [name]="channel" (muteChannel)="mute($event)"></app-channel>
+<div class="controls">
+  <button class="c-btn button play" (click)="play()">
+    <i class="fa-solid fa-play"></i>PLAY
+  </button>
+  <button class="c-btn button stop" (click)="pause()">
+    <i class="fa-solid fa-stop"></i>STOP
+  </button>
+  <input
+    type="range"
+    id="volume"
+    min="0"
+    max="2"
+    value="1"
+    step="0.01"
+    (input)="changeGain($event)"
+  />
+</div>
+
+<div class="channels">
+  <div *ngFor="let channel of gainNodes; let i = index">
+    <app-channel [name]="i" (muteChannel)="mute(i)"></app-channel>
+  </div>
 </div>

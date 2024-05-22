@@ -24,6 +24,8 @@ export class PlayerComponent implements OnInit {
   track: AudioBufferSourceNode | undefined;
   gainNode!: GainNode | undefined;
 
+  gainNodes: GainNode[] = [];
+
   currentTime = 0;
   startTime = 0;
 
@@ -41,12 +43,9 @@ export class PlayerComponent implements OnInit {
     }
   }
 
-  mute(ch: string) {
-    console.log(this.audioContext);
-    console.log(this.gainNode);
-    console.log(this.track);
-    this.currentTime = Date.now() - this.startTime;
-    console.log(ch);
+  mute(channel: number) {
+    const theNode = this.gainNodes[channel];
+    theNode.gain.value = theNode.gain.value > 0 ? 0 : 1;
   }
 
   async launchAudio() {
@@ -58,12 +57,33 @@ export class PlayerComponent implements OnInit {
 
   playAudio(buffer: AudioBuffer) {
     if (this.audioContext && buffer) {
+      const numberOfChannels = this.files.length;
+
       const source = this.audioContext.createBufferSource();
       source.buffer = buffer;
-      this.track = source;
-      if (this.gainNode) {
-        source.connect(this.gainNode).connect(this.audioContext.destination);
+
+      const splitter =
+        this.audioContext.createChannelSplitter(numberOfChannels);
+      for (let i = 0; i < numberOfChannels; i++) {
+        const node = this.audioContext.createGain();
+        this.gainNodes.push(node);
       }
+      const merger = this.audioContext.createChannelMerger(numberOfChannels);
+      source.connect(splitter);
+      for (let i = 0; i < numberOfChannels; i++) {
+        splitter.connect(this.gainNodes[i], i);
+      }
+
+      for (let i = 0; i < numberOfChannels; i++) {
+        this.gainNodes[i].connect(merger, 0, i);
+      }
+
+      merger.connect(this.audioContext.destination);
+
+      this.track = source;
+      // if (this.gainNode) {
+      //   source.connect(this.gainNode).connect(this.audioContext.destination);
+      // }
       source.start();
       this.startTime = Date.now();
     }
