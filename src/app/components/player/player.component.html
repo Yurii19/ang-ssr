@@ -20,6 +20,6 @@
 
 <div class="channels">
   <div *ngFor="let channel of gainNodes; let i = index">
-    <app-channel [name]="i" (muteChannel)="mute(i)"></app-channel>
+    <app-channel [name]="i" (muteChannel)="mute(i)" (gainChannel)="changeChannelGain($event)"></app-channel>
   </div>
 </div>

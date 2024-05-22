@@ -16,7 +16,7 @@ export class PlayerComponent implements OnInit {
   files = [
     '/assets/letilasoya/t1.mp3',
     '/assets/letilasoya/t2.mp3',
-    '/assets/letilasoya/t3.mp3',
+    '/assets/letilasoya/t3.mp3'
   ];
 
   audioContext: AudioContext | undefined;
@@ -46,6 +46,8 @@ export class PlayerComponent implements OnInit {
   mute(channel: number) {
     const theNode = this.gainNodes[channel];
     theNode.gain.value = theNode.gain.value > 0 ? 0 : 1;
+    // console.log(this.gainNodes);
+    // console.log(theNode);
   }
 
   async launchAudio() {
@@ -80,7 +82,7 @@ export class PlayerComponent implements OnInit {
 
       merger.connect(this.audioContext.destination);
 
-      this.track = source;
+       this.track = source;
       // if (this.gainNode) {
       //   source.connect(this.gainNode).connect(this.audioContext.destination);
       // }
@@ -118,10 +120,12 @@ export class PlayerComponent implements OnInit {
     for (let channel = 0; channel < numberOfChannels; channel++) {
       const nowBuffering = newBuffer.getChannelData(channel);
       const srcBuffer = tracks[channel].getChannelData(0);
+     // console.log(srcBuffer)
       for (let i = 0; i < frameCount; i++) {
         nowBuffering[i] = srcBuffer[i];
       }
     }
+    console.log(newBuffer)
     return newBuffer;
   }
 
@@ -142,13 +146,17 @@ export class PlayerComponent implements OnInit {
   }
 
   play() {
+    this.gainNodes = [];
     this.launchAudio();
-    // this.mergeBuffers();
   }
 
   pause() {
-    // this.sources.forEach((src) => src.stop());
     this.track?.stop();
-    //this.track = undefined;
+  }
+
+  changeChannelGain(event: { channelId: number; volume: number }) {
+    const theNode = this.gainNodes[event.channelId];
+    theNode.gain.value = event.volume;
+    console.log(theNode);
   }
 }
