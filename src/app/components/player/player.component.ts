@@ -77,7 +77,8 @@ export class PlayerComponent implements OnInit {
       }
 
       for (let i = 0; i < numberOfChannels; i++) {
-        this.gainNodes[i].connect(merger, 0, i);
+        this.gainNodes[i].connect(merger, 0, 0);
+        this.gainNodes[i].connect(merger, 0, 1);
       }
 
       merger.connect(this.audioContext.destination);
