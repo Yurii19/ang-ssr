@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 //import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ChannelComponent } from './channel/channel.component';
@@ -6,7 +6,7 @@ import { ChannelComponent } from './channel/channel.component';
 @Component({
   selector: 'app-player',
   standalone: true,
-  imports: [ChannelComponent],
+  imports: [ChannelComponent, CommonModule],
   templateUrl: './player.component.html',
   styleUrl: './player.component.scss',
 })
@@ -20,9 +20,14 @@ export class PlayerComponent implements OnInit {
   ];
 
   audioContext: AudioContext | undefined;
-  sources: AudioBufferSourceNode[] = [];
-  track: MediaElementAudioSourceNode | undefined;
+  // sources: AudioBufferSourceNode[] = [];
+  track: AudioBufferSourceNode | undefined;
   gainNode!: GainNode | undefined;
+
+  currentTime = 0;
+  startTime = 0;
+
+  // startedTime = 0;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: NonNullable<unknown> // public http: HttpClient
@@ -36,6 +41,14 @@ export class PlayerComponent implements OnInit {
     }
   }
 
+  mute(ch: string) {
+    console.log(this.audioContext);
+    console.log(this.gainNode);
+    console.log(this.track);
+    this.currentTime = Date.now() - this.startTime;
+    console.log(ch);
+  }
+
   async launchAudio() {
     const buffer = await this.mergeBuffers();
     if (buffer) {
@@ -47,11 +60,12 @@ export class PlayerComponent implements OnInit {
     if (this.audioContext && buffer) {
       const source = this.audioContext.createBufferSource();
       source.buffer = buffer;
-      this.sources.push(source);
+      this.track = source;
       if (this.gainNode) {
         source.connect(this.gainNode).connect(this.audioContext.destination);
       }
-      source.start(5);
+      source.start();
+      this.startTime = Date.now();
     }
   }
 
@@ -109,10 +123,12 @@ export class PlayerComponent implements OnInit {
 
   play() {
     this.launchAudio();
-    this.mergeBuffers();
+    // this.mergeBuffers();
   }
 
   pause() {
-    this.sources.forEach((src) => src.stop());
+    // this.sources.forEach((src) => src.stop());
+    this.track?.stop();
+    //this.track = undefined;
   }
 }

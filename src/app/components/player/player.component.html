@@ -1,5 +1,17 @@
 <p>player works!</p>
+<h2>{{ currentTime | date : "mm : ss" }}</h2>
+<h2>{{ startTime | date : "EEEE, MMMM dd -  hh : mm : ss" }}</h2>
 <button class="button play" (click)="play()">PLAY</button>
 <button class="button stop" (click)="pause()">STOP</button>
-<input type="range" id="volume" min="0" max="2" value="1" step="0.01" (input)="changeGain($event)"/>
-<app-channel></app-channel>
+<input
+  type="range"
+  id="volume"
+  min="0"
+  max="2"
+  value="1"
+  step="0.01"
+  (input)="changeGain($event)"
+/>
+<div *ngFor="let channel of files">
+  <app-channel [name]="channel" (muteChannel)="mute($event)"></app-channel>
+</div>

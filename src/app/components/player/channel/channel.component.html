@@ -1,1 +1,13 @@
-<p>channel works!</p>
+<div class="channel">
+  <span>{{ name }}</span>
+  <button (click)="mute(name)">Mute</button>
+  <input
+  type="range"
+    id="volume"
+    min="0"
+    max="2"
+    [value]="soundLevel"
+    step="0.01"
+    
+  />
+</div>
