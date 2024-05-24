@@ -20,6 +20,11 @@
 
 <div class="channels">
   <div *ngFor="let channel of gainNodes; let i = index">
-    <app-channel [name]="i" (muteChannel)="mute(i)" (gainChannel)="changeChannelGain($event)"></app-channel>
+    <app-channel
+      [name]="i"
+      (muteChannel)="mute(i)"
+      (gainChannel)="changeChannelGain($event)"
+    ></app-channel>
   </div>
 </div>
+<button class="c-btn" (click)="play2()">Play Audio</button>

@@ -2,6 +2,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 //import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ChannelComponent } from './channel/channel.component';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-player',
@@ -12,11 +13,16 @@ import { ChannelComponent } from './channel/channel.component';
 })
 export class PlayerComponent implements OnInit {
   audioFile: string = '/assets/teleport.mp3';
+  aurl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+  files2 = [
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+  ];
 
   files = [
     '/assets/letilasoya/t1.mp3',
     '/assets/letilasoya/t2.mp3',
-    '/assets/letilasoya/t3.mp3'
+    '/assets/letilasoya/t3.mp3',
   ];
 
   audioContext: AudioContext | undefined;
@@ -32,7 +38,8 @@ export class PlayerComponent implements OnInit {
   // startedTime = 0;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: NonNullable<unknown> // public http: HttpClient
+    @Inject(PLATFORM_ID) private platformId: NonNullable<unknown>, // public http: HttpClient
+    private audioService: AudioService
   ) {}
 
   ngOnInit() {
@@ -41,6 +48,10 @@ export class PlayerComponent implements OnInit {
       this.audioContext = new AudioContext();
       this.gainNode = this.audioContext.createGain();
     }
+  }
+
+  play2() {
+    this.audioService.startAudioFromUrls(this.files2)
   }
 
   mute(channel: number) {
@@ -83,7 +94,7 @@ export class PlayerComponent implements OnInit {
 
       merger.connect(this.audioContext.destination);
 
-       this.track = source;
+      this.track = source;
       // if (this.gainNode) {
       //   source.connect(this.gainNode).connect(this.audioContext.destination);
       // }
@@ -121,12 +132,12 @@ export class PlayerComponent implements OnInit {
     for (let channel = 0; channel < numberOfChannels; channel++) {
       const nowBuffering = newBuffer.getChannelData(channel);
       const srcBuffer = tracks[channel].getChannelData(0);
-     // console.log(srcBuffer)
+      // console.log(srcBuffer)
       for (let i = 0; i < frameCount; i++) {
         nowBuffering[i] = srcBuffer[i];
       }
     }
-    console.log(newBuffer)
+    console.log(newBuffer);
     return newBuffer;
   }
 
