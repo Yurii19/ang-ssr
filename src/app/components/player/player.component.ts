@@ -15,9 +15,15 @@ export class PlayerComponent implements OnInit {
   audioFile: string = '/assets/teleport.mp3';
   aurl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
   files2 = [
-    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    'https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/nnGZCxWp5wFWafKxStqlTVfabfiABJ2aJAoAqwue.mp3',
+    'https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/EqUjQuGJNwhjrq1pr6OMwUsp4RNaCDelMfSbuJsj.mp3',
   ];
+  files3 =[
+    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t1.mp3',
+    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t2.mp3',
+    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t3.mp3'
+
+  ]
 
   files = [
     '/assets/letilasoya/t1.mp3',
@@ -51,7 +57,7 @@ export class PlayerComponent implements OnInit {
   }
 
   play2() {
-    this.audioService.startAudioFromUrls(this.files2)
+    this.audioService.startAudioFromUrls(this.files3)
   }
 
   mute(channel: number) {
