@@ -19,6 +19,53 @@ export class AudioService {
     }
   }
 
+
+   async mergeBuffers(urls: string[]) {
+    const tracks: AudioBuffer[] = [];
+
+    for await (const url of urls) {
+      const buffer = await this.loadAudioFile(url);
+      if (buffer) {
+        tracks.push(buffer);
+      }
+    }
+
+    const firstTrack = tracks[0];
+    const duration =
+      firstTrack && firstTrack.duration ? firstTrack.duration : 0;
+    const rate =
+      firstTrack && firstTrack.sampleRate ? firstTrack.sampleRate : 0;
+    const numberOfChannels = urls.length;
+    const frameCount = rate * duration;
+
+    if (!this.audioContext) return;
+
+    const newBuffer: AudioBuffer = this.audioContext.createBuffer(
+      numberOfChannels,
+      frameCount,
+      rate
+    );
+
+    for (let channel = 0; channel < numberOfChannels; channel++) {
+      const nowBuffering = newBuffer.getChannelData(channel);
+      const srcBuffer = tracks[channel].getChannelData(0);
+      for (let i = 0; i < frameCount; i++) {
+        nowBuffering[i] = srcBuffer[i];
+      }
+    }
+    return newBuffer;
+  }
+
+  async loadAudioFile(url: string) {
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+    if (this.audioContext === undefined) return;
+    return this.audioContext.decodeAudioData(buffer);
+  }
+
+
+
+// services for handle html Audio approach
   startAudioFromUrls(audioUrls: string[]) {
     this.audioElements = audioUrls.map((url) => {
       const audio = new Audio(url);
@@ -41,26 +88,8 @@ export class AudioService {
       merger.connect(this.audioContext.destination);
     }
 
-    // const merger = this.audioContext?.createChannelMerger(size);
-
-    //  if (this.audioContext) {
-    // this.audioSources.forEach((el) =>
-    //   el.connect(this.audioContext!.destination)
-    // );
-
-    // }
-
     this.play();
   }
-
-  // playFrom(url: string) {
-  //   const audioElement = new Audio(url);
-  //   audioElement.crossOrigin = 'anonymous';
-  //   const src = this.audioContext?.createMediaElementSource(audioElement);
-  //   src?.connect(this.audioContext!.destination);
-  //   audioElement.play();
-  //   console.log(audioElement);
-  // }
 
   play() {
     this.audioElements.forEach((el) => {
