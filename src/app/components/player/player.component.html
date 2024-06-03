@@ -23,6 +23,7 @@
   <div *ngFor="let channel of gainNodes; let i = index">
     <app-channel
       [name]="i"
+      [graph]="visualNodes[i]"
       (muteChannel)="mute(i)"
       (gainChannel)="changeChannelGain($event)"
     ></app-channel>

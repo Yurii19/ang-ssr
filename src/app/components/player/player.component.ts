@@ -22,6 +22,7 @@ export class PlayerComponent implements OnInit {
   track: AudioBufferSourceNode | undefined;
 
   gainNodes: GainNode[] = [];
+  visualNodes: Float32Array[] = [new Float32Array()];
 
   currentTime = 0;
   startTime = 0;
@@ -71,6 +72,11 @@ export class PlayerComponent implements OnInit {
 
       this.gainNodes = Array.from(Array(numberOfChannels).keys()).map(() =>
         this.audioContext!.createGain()
+      );
+
+      this.visualNodes = Array.from(Array(numberOfChannels).keys()).map((i) =>
+        // this.audioContext!.createGain()
+        buffer.getChannelData(i)
       );
 
       const merger = this.audioContext.createChannelMerger(numberOfChannels);

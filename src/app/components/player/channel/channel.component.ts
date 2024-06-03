@@ -22,6 +22,8 @@ export class ChannelComponent implements AfterViewInit {
   @Input() soundLevel: number = 10;
 
   @Input() name: number = 0;
+  
+  @Input() graph: Float32Array = new Float32Array();
 
   @Output() muteChannel = new EventEmitter<number>();
   @Output() gainChannel = new EventEmitter<{
@@ -35,6 +37,7 @@ export class ChannelComponent implements AfterViewInit {
   constructor() {}
 
   ngAfterViewInit(): void {
+    console.log(this.graph)
     const canvasContext = this.myCanvas.nativeElement.getContext('2d');
     const canvas = this.myCanvas.nativeElement;
 
