@@ -5,11 +5,11 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnInit,
+  OnChanges,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
-//import { EventEmitter } from 'stream';
 
 @Component({
   selector: 'app-channel',
@@ -19,7 +19,7 @@ import {
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
-export class ChannelComponent implements AfterViewInit, OnInit {
+export class ChannelComponent implements AfterViewInit, OnChanges{
   @Input() duration: number = 0;
   @Input() name: number = 0;
   @Input() graph: Float32Array = new Float32Array();
@@ -35,12 +35,13 @@ export class ChannelComponent implements AfterViewInit, OnInit {
   private myCanvas: ElementRef = {} as ElementRef;
   soundLevel = 10;
 
+  isMuted = false;
+
   constructor() {}
-
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.inited.emit();
+    console.log(changes)
   }
-
 
   ngAfterViewInit(): void {
     
@@ -57,7 +58,7 @@ export class ChannelComponent implements AfterViewInit, OnInit {
 
 
     const step = Math.round(this.graph.length / canvas.width);
-    console.log(step)
+    // console.log(step)
     let j = 0;
     this.graph.forEach((el, i) => {
       if (i % step === 0) {
@@ -72,16 +73,16 @@ export class ChannelComponent implements AfterViewInit, OnInit {
       }
     });
 
-    // for(let i = 0; i < this.graph.length; i++){
-    //   const  n = this.graph[i];
-    //   canvasContext.moveTo(i, mid);
-    //   canvasContext.lineTo(i, mid + n * 100);
-    //   canvasContext.stroke();
-    // }
+  }
+
+  createCanvas(){
+
   }
 
   mute(event: number) {
     this.muteChannel.emit(event);
+    this.isMuted = !this.isMuted;
+
   }
 
   changeGain(ev: Event) {

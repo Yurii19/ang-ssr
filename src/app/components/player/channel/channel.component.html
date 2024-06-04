@@ -4,7 +4,7 @@
     <button class="c-btn" (click)="mute(name)">
       <i class="fa-solid fa-volume-xmark"></i>Mute
     </button>
-    <input
+    <!-- <input
       class="gain"
       type="range"
       id="volume"
@@ -13,7 +13,9 @@
       [value]="soundLevel"
       step="0.01"
       (input)="changeGain($event)"
-    />
+    /> -->
   </div>
-  <canvas #visualizer></canvas>
+  <div class="canvas" [class.muted]="isMuted">
+    <canvas #visualizer></canvas>
+  </div>
 </div>

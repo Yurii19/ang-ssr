@@ -12,6 +12,7 @@ import { AudioService } from '../../services/audio.service';
   styleUrl: './player.component.scss',
 })
 export class PlayerComponent implements OnInit {
+  POGRESS_POINTER_POSITION = 148;
   files = [
     'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t1.mp3',
     'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t2.mp3',
@@ -28,11 +29,12 @@ export class PlayerComponent implements OnInit {
   currentTime = 0;
   startTime = 0;
 
-  pointerPosition = 170;
+  pointerPosition = this.POGRESS_POINTER_POSITION;
 
   isLoading = false;
   tracksReady = 0;
   // startedTime = 0;
+  playProgress: ReturnType<typeof setInterval> | undefined;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: NonNullable<unknown>, // public http: HttpClient
@@ -46,9 +48,9 @@ export class PlayerComponent implements OnInit {
     }
   }
 
-  play2() {
-    this.audioService.startAudioFromUrls(this.files);
-  }
+  // play2() {
+  //   this.audioService.startAudioFromUrls(this.files);
+  // }
 
   mute(channel: number) {
     const theNode = this.gainNodes[channel];
@@ -94,25 +96,27 @@ export class PlayerComponent implements OnInit {
       this.track = source;
       this.isLoading = false;
       this.startTime = Date.now();
+      // this.drawPointer()
     }
   }
 
   trackStart() {
     this.tracksReady = this.tracksReady + 1;
     if (this.tracksReady === this.files.length) {
-      console.log(this.tracksReady);
       this.track?.start();
-      this.drawPointer()
+      this.drawPointer();
     }
   }
 
-  drawPointer(){
-    setInterval(()=>{
-      if(this.pointerPosition - 170 < this.trackTimeLenght*10){
+  private drawPointer() {
+    this.playProgress = setInterval(() => {
+      if (
+        this.pointerPosition - this.POGRESS_POINTER_POSITION <
+        this.trackTimeLenght * 10
+      ) {
         this.pointerPosition = this.pointerPosition + 1;
       }
-     
-    },100)
+    }, 100);
   }
 
   changeGain(ev: Event) {
@@ -123,11 +127,15 @@ export class PlayerComponent implements OnInit {
 
   play() {
     this.gainNodes = [];
+    this.pointerPosition = this.POGRESS_POINTER_POSITION;
     this.launchAudio();
   }
 
-  pause() {
+  stop() {
     this.track?.stop();
+    clearInterval(this.playProgress);
+    this.tracksReady = 0;
+    // console.log(this.playProgress)
   }
 
   changeChannelGain(event: { channelId: number; volume: number }) {
