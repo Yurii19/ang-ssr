@@ -20,12 +20,15 @@
 </div>
 
 <div class="channels">
+  <div class="v-line" [ngStyle]="{ left: pointerPosition + 'px' }"></div>
   <div *ngFor="let channel of gainNodes; let i = index">
     <app-channel
+      [duration]="trackTimeLenght"
       [name]="i"
       [graph]="visualNodes[i]"
       (muteChannel)="mute(i)"
       (gainChannel)="changeChannelGain($event)"
+      (inited)="trackStart()"
     ></app-channel>
   </div>
 </div>

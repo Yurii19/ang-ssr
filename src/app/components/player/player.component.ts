@@ -23,12 +23,15 @@ export class PlayerComponent implements OnInit {
 
   gainNodes: GainNode[] = [];
   visualNodes: Float32Array[] = [new Float32Array()];
+  trackTimeLenght: number = 0;
 
   currentTime = 0;
   startTime = 0;
 
-  isLoading = false;
+  pointerPosition = 170;
 
+  isLoading = false;
+  tracksReady = 0;
   // startedTime = 0;
 
   constructor(
@@ -61,6 +64,7 @@ export class PlayerComponent implements OnInit {
   }
 
   playAudio(buffer: AudioBuffer) {
+    this.trackTimeLenght = buffer.duration;
     if (this.audioContext && buffer) {
       const numberOfChannels = this.files.length;
 
@@ -74,10 +78,9 @@ export class PlayerComponent implements OnInit {
         this.audioContext!.createGain()
       );
 
-      this.visualNodes = Array.from(Array(numberOfChannels).keys()).map((i) =>
-        // this.audioContext!.createGain()
-        buffer.getChannelData(i)
-      );
+      this.visualNodes = Array.from(Array(numberOfChannels).keys()).map((i) => {
+        return buffer.getChannelData(i);
+      });
 
       const merger = this.audioContext.createChannelMerger(numberOfChannels);
       source.connect(splitter);
@@ -89,10 +92,27 @@ export class PlayerComponent implements OnInit {
       }
       merger.connect(this.audioContext.destination);
       this.track = source;
-      source.start();
       this.isLoading = false;
       this.startTime = Date.now();
     }
+  }
+
+  trackStart() {
+    this.tracksReady = this.tracksReady + 1;
+    if (this.tracksReady === this.files.length) {
+      console.log(this.tracksReady);
+      this.track?.start();
+      this.drawPointer()
+    }
+  }
+
+  drawPointer(){
+    setInterval(()=>{
+      if(this.pointerPosition - 170 < this.trackTimeLenght*10){
+        this.pointerPosition = this.pointerPosition + 1;
+      }
+     
+    },100)
   }
 
   changeGain(ev: Event) {
