@@ -37,6 +37,8 @@ export class ChannelComponent implements AfterViewInit, OnChanges{
 
   isMuted = false;
 
+  canContext : CanvasRenderingContext2D | undefined;
+
   constructor() {}
   ngOnChanges(changes: SimpleChanges): void {
     this.inited.emit();
@@ -46,7 +48,7 @@ export class ChannelComponent implements AfterViewInit, OnChanges{
   ngAfterViewInit(): void {
     
     // console.log(this.graph)
-    const canvasContext = this.myCanvas.nativeElement.getContext('2d');
+    const canvasContext = this.createCanvas()
     const canvas = this.myCanvas.nativeElement;
     canvas.width = this.duration * 10;
 
@@ -76,7 +78,8 @@ export class ChannelComponent implements AfterViewInit, OnChanges{
   }
 
   createCanvas(){
-
+   const context = this.myCanvas.nativeElement.getContext('2d');
+   return context;
   }
 
   mute(event: number) {
