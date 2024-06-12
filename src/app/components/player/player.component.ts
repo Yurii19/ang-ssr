@@ -12,6 +12,7 @@ import { AudioService } from '../../services/audio.service';
   styleUrl: './player.component.scss',
 })
 export class PlayerComponent implements OnInit {
+  POGRESS_POINTER_POSITION = 148;
   files = [
     'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t1.mp3',
     'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t2.mp3',
@@ -22,13 +23,18 @@ export class PlayerComponent implements OnInit {
   track: AudioBufferSourceNode | undefined;
 
   gainNodes: GainNode[] = [];
+  visualNodes: Float32Array[] = [new Float32Array()];
+  trackTimeLenght: number = 0;
 
   currentTime = 0;
   startTime = 0;
 
-  isLoading = false;
+  pointerPosition = this.POGRESS_POINTER_POSITION;
 
+  isLoading = false;
+  tracksReady = 0;
   // startedTime = 0;
+  playProgress: ReturnType<typeof setInterval> | undefined;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: NonNullable<unknown>, // public http: HttpClient
@@ -42,9 +48,9 @@ export class PlayerComponent implements OnInit {
     }
   }
 
-  play2() {
-    this.audioService.startAudioFromUrls(this.files);
-  }
+  // play2() {
+  //   this.audioService.startAudioFromUrls(this.files);
+  // }
 
   mute(channel: number) {
     const theNode = this.gainNodes[channel];
@@ -60,6 +66,7 @@ export class PlayerComponent implements OnInit {
   }
 
   playAudio(buffer: AudioBuffer) {
+    this.trackTimeLenght = buffer.duration;
     if (this.audioContext && buffer) {
       const numberOfChannels = this.files.length;
 
@@ -73,6 +80,10 @@ export class PlayerComponent implements OnInit {
         this.audioContext!.createGain()
       );
 
+      this.visualNodes = Array.from(Array(numberOfChannels).keys()).map((i) => {
+        return buffer.getChannelData(i);
+      });
+
       const merger = this.audioContext.createChannelMerger(numberOfChannels);
       source.connect(splitter);
       this.gainNodes.forEach((node, i) => splitter.connect(node, i));
@@ -83,10 +94,29 @@ export class PlayerComponent implements OnInit {
       }
       merger.connect(this.audioContext.destination);
       this.track = source;
-      source.start();
       this.isLoading = false;
       this.startTime = Date.now();
+      // this.drawPointer()
     }
+  }
+
+  trackStart() {
+    this.tracksReady = this.tracksReady + 1;
+    if (this.tracksReady === this.files.length) {
+      this.track?.start();
+      this.drawPointer();
+    }
+  }
+
+  private drawPointer() {
+    this.playProgress = setInterval(() => {
+      if (
+        this.pointerPosition - this.POGRESS_POINTER_POSITION <
+        this.trackTimeLenght * 10
+      ) {
+        this.pointerPosition = this.pointerPosition + 1;
+      }
+    }, 100);
   }
 
   changeGain(ev: Event) {
@@ -97,11 +127,15 @@ export class PlayerComponent implements OnInit {
 
   play() {
     this.gainNodes = [];
+    this.pointerPosition = this.POGRESS_POINTER_POSITION;
     this.launchAudio();
   }
 
-  pause() {
+  stop() {
     this.track?.stop();
+    clearInterval(this.playProgress);
+    this.tracksReady = 0;
+    // console.log(this.playProgress)
   }
 
   changeChannelGain(event: { channelId: number; volume: number }) {

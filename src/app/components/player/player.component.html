@@ -5,7 +5,7 @@
   <button class="c-btn button play" (click)="play()">
     <i class="fa-solid fa-play"></i>PLAY
   </button>
-  <button class="c-btn button stop" (click)="pause()">
+  <button class="c-btn button stop" (click)="stop()">
     <i class="fa-solid fa-stop"></i>STOP
   </button>
   <input
@@ -20,13 +20,17 @@
 </div>
 
 <div class="channels">
+  <div class="v-line" [ngStyle]="{ left: pointerPosition + 'px' }" *ngIf="track"></div>
   <div *ngFor="let channel of gainNodes; let i = index">
     <app-channel
+      [duration]="trackTimeLenght"
       [name]="i"
+      [graph]="visualNodes[i]"
       (muteChannel)="mute(i)"
       (gainChannel)="changeChannelGain($event)"
+      (inited)="trackStart()"
     ></app-channel>
   </div>
 </div>
 
-<button class="c-btn" (click)="play2()">Play Audio</button>
+<!-- <button class="c-btn" (click)="play2()">Play Audio</button> -->
