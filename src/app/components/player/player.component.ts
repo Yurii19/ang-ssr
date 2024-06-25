@@ -23,6 +23,7 @@ export class PlayerComponent implements OnInit {
   track: AudioBufferSourceNode | undefined;
 
   gainNodes: GainNode[] = [];
+  generalGainNode: GainNode = {} as GainNode;
   visualNodes: Float32Array[] = [new Float32Array()];
   trackTimeLenght: number = 0;
 
@@ -92,7 +93,9 @@ export class PlayerComponent implements OnInit {
         this.gainNodes[i].connect(merger, 0, 0);
         this.gainNodes[i].connect(merger, 0, 1);
       }
-      merger.connect(this.audioContext.destination);
+      this.generalGainNode = this.audioContext.createGain();
+      merger.connect(this.generalGainNode);
+      this.generalGainNode.connect(this.audioContext.destination);
       this.track = source;
       this.isLoading = false;
       this.startTime = Date.now();
@@ -122,7 +125,7 @@ export class PlayerComponent implements OnInit {
   changeGain(ev: Event) {
     const input = ev.target as HTMLInputElement;
     const newValue = Number.parseFloat(input.value);
-    console.log(newValue);
+    this.generalGainNode.gain.value = newValue;
   }
 
   play() {
