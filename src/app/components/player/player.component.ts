@@ -12,7 +12,7 @@ import { AudioService } from '../../services/audio.service';
   styleUrl: './player.component.scss',
 })
 export class PlayerComponent implements OnInit {
-  POGRESS_POINTER_POSITION = 148;
+  POGRESS_POINTER_POSITION = 140;
   files = [
     'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t1.mp3',
     'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t2.mp3',
@@ -28,6 +28,7 @@ export class PlayerComponent implements OnInit {
   trackTimeLenght: number = 0;
 
   currentTime = 0;
+
   startTime = 0;
 
   pointerPosition = this.POGRESS_POINTER_POSITION;
@@ -99,7 +100,7 @@ export class PlayerComponent implements OnInit {
       this.track = source;
       this.isLoading = false;
       this.startTime = Date.now();
-      // this.drawPointer()
+    
     }
   }
 
