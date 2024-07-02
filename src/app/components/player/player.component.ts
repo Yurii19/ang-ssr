@@ -28,6 +28,7 @@ export class PlayerComponent implements OnInit {
   trackTimeLenght: number = 0;
 
   currentTime = 0;
+  
   startTime = 0;
 
   pointerPosition = this.POGRESS_POINTER_POSITION;
