@@ -1,8 +1,9 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 //import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { ChannelComponent } from './channel/channel.component';
+//import { ChannelComponent } from './channel/channel.component';
 import { AudioService } from '../../services/audio.service';
+import { ChannelComponent } from './channel/channel.component';
 
 @Component({
   selector: 'app-player',
@@ -28,7 +29,7 @@ export class PlayerComponent implements OnInit {
   trackTimeLenght: number = 0;
 
   currentTime = 0;
-  
+
   startTime = 0;
 
   pointerPosition = this.POGRESS_POINTER_POSITION;
