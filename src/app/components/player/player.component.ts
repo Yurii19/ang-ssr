@@ -1,9 +1,8 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 //import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-//import { ChannelComponent } from './channel/channel.component';
-import { AudioService } from '../../services/audio.service';
 import { ChannelComponent } from './channel/channel.component';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
   selector: 'app-player',
