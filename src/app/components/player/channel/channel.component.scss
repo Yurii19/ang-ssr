@@ -1,14 +1,14 @@
 .channel {
   display: flex;
   align-items: center;
-  
+
   .controls {
     display: flex;
     flex-direction: column;
     padding: 10px;
     gap: 10px;
   }
-  
+
   span {
     padding: 0 10px;
     font-family: consolas, sans-serif;
@@ -17,4 +17,16 @@
 
 .muted {
   opacity: 0.7;
+}
+
+.canvas {
+  position: relative;
+  
+  .v-line {
+    position: absolute;
+    top: 0;
+    height: 150px;
+    border-left: 1px solid red;
+    z-index: 999;
+  }
 }

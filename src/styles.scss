@@ -1,35 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+
+// $my-palette: mat.$amber-palette;
+$my-primary: mat.define-palette(mat.$teal-palette, 500);
+$my-accent: mat.define-palette(mat.$amber-palette, 500);
+$my-warn: mat.define-palette(mat.$red-palette);
+
+$my-theme: mat.define-light-theme((
+ color: (
+   primary: $my-primary,
+   accent: $my-accent,
+   warn: $my-warn,
+ ),
+ typography: mat.define-typography-config(),
+ density: 0,
+));
+@include mat.all-component-themes($my-theme);
+
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined");
 html {
   min-height: 100vh;
 }
 body {
-  background-color: #f7f1e3;
   font-family: "Courier New", Courier, monospace;
   height: 100%;
   overflow: auto;
   display: flex;
   flex-direction: column;
-}
-
-$primary-color: #ffb000;
-$secondary-color: #ffcf9d;
-$light-color: #f5f5dc;
-
-.c-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  background-color: $primary-color;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  gap: 5px;
-  &:hover {
-    opacity: 0.8;
-  }
-  &:active {
-    box-shadow: 2px 2px 5px grey;
-  }
 }
 
 html,

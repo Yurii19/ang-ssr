@@ -1,0 +1,5 @@
+<div class="admin">
+  <app-add-item-dialog [folders]="data"></app-add-item-dialog>
+  @for (item of data; track $index) {
+  <app-repo-item [folder]="item"></app-repo-item>}
+</div>

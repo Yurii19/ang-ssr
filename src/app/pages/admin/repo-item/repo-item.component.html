@@ -1,0 +1,50 @@
+<mat-card appearance="outlined">
+  @if(isLoading){
+  <ng-container> <span class="loader"></span></ng-container>
+  }
+  <mat-card-header>
+    @if(!showFiles){
+    <!-- <mat-icon
+      aria-hidden="false"
+      aria-label="Example home icon"
+      class="material-icons-outlined"
+      fontIcon="folder"
+    ></mat-icon> -->
+
+    <mat-icon
+      aria-hidden="false"
+      class="material-icons-outlined"
+      color="primary"
+      >folder</mat-icon
+    >
+
+    }@else{
+    <mat-icon  color="primary" 
+      >folder_open</mat-icon
+    >
+    <!-- <mat-icon
+      aria-hidden="false"
+      aria-label="Example home icon"
+      class="material-icons-outlined"
+      fontIcon="folder_open"
+
+    ></mat-icon> -->
+    }
+
+    <span>{{ folder.name }}</span>
+    <button mat-stroked-button (click)="showContent()">
+      <mat-icon
+        aria-hidden="false"
+        aria-label="Example home icon"
+        fontIcon="unfold_more"
+      ></mat-icon
+      >Open
+    </button>
+  </mat-card-header>
+  @if(showFiles){
+  <mat-card-content
+    >@for (item of files; track $index) {
+    <app-item [item]="item"></app-item>
+    }</mat-card-content
+  >}
+</mat-card>

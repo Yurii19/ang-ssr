@@ -1,22 +1,29 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 //import { HttpClient } from '@angular/common/http';
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { ChannelComponent } from './channel/channel.component';
 import { AudioService } from '../../services/audio.service';
+import {MatButtonModule} from '@angular/material/button';
+
 
 @Component({
   selector: 'app-player',
   standalone: true,
-  imports: [ChannelComponent, CommonModule],
+  imports: [ChannelComponent, CommonModule, MatButtonModule],
   templateUrl: './player.component.html',
   styleUrl: './player.component.scss',
 })
-export class PlayerComponent implements OnInit {
-  POGRESS_POINTER_POSITION = 140;
+export class PlayerComponent implements OnInit, OnDestroy {
   files = [
-    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t1.mp3',
-    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t2.mp3',
-    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/t3.mp3',
+    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/Letila_Soya/t1.mp3',
+    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/Letila_Soya/t2.mp3',
+    'https://cdn.jsdelivr.net/gh/Yurii19/static@master/Letila_Soya/t3.mp3',
   ];
 
   audioContext: AudioContext | undefined;
@@ -31,7 +38,7 @@ export class PlayerComponent implements OnInit {
 
   startTime = 0;
 
-  pointerPosition = this.POGRESS_POINTER_POSITION;
+  pointerPosition = 0;
 
   isLoading = false;
   tracksReady = 0;
@@ -100,11 +107,10 @@ export class PlayerComponent implements OnInit {
       this.track = source;
       this.isLoading = false;
       this.startTime = Date.now();
-    
     }
   }
 
-  trackStart() {
+  onChannelReady() {
     this.tracksReady = this.tracksReady + 1;
     if (this.tracksReady === this.files.length) {
       this.track?.start();
@@ -114,10 +120,7 @@ export class PlayerComponent implements OnInit {
 
   private drawPointer() {
     this.playProgress = setInterval(() => {
-      if (
-        this.pointerPosition - this.POGRESS_POINTER_POSITION <
-        this.trackTimeLenght * 10
-      ) {
+      if (this.pointerPosition < this.trackTimeLenght * 10) {
         this.pointerPosition = this.pointerPosition + 1;
       }
     }, 100);
@@ -131,7 +134,7 @@ export class PlayerComponent implements OnInit {
 
   play() {
     this.gainNodes = [];
-    this.pointerPosition = this.POGRESS_POINTER_POSITION;
+    this.pointerPosition = 0;
     this.launchAudio();
   }
 
@@ -145,5 +148,9 @@ export class PlayerComponent implements OnInit {
   changeChannelGain(event: { channelId: number; volume: number }) {
     const theNode = this.gainNodes[event.channelId];
     theNode.gain.value = event.volume;
+  }
+
+  ngOnDestroy(): void {
+    this.stop();
   }
 }

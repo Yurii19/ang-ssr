@@ -1,7 +1,7 @@
 <div class="channel">
   <div class="controls">
     <span>Channel: {{ name }}</span>
-    <button class="c-btn" (click)="mute(name)">
+    <button mat-flat-button color="accent" (click)="mute(name)">
       <i class="fa-solid fa-volume-xmark"></i>Mute
     </button>
     <!-- <input
@@ -17,5 +17,9 @@
   </div>
   <div class="canvas" [class.muted]="isMuted">
     <canvas #visualizer></canvas>
+    <div
+      class="v-line"
+      [ngStyle]="{ left: playbackProgress + 'px' }"
+    ></div>
   </div>
 </div>
