@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HomeComponent } from './home.component';
-import { HttpClientModule } from '@angular/common/http';
+import { RepoItemComponent } from './repo-item.component';
 
-describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+describe('RepoItemComponent', () => {
+  let component: RepoItemComponent;
+  let fixture: ComponentFixture<RepoItemComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeComponent, HttpClientModule],
+      imports: [RepoItemComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(HomeComponent);
+    fixture = TestBed.createComponent(RepoItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

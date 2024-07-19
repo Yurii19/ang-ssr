@@ -1,13 +1,18 @@
 <div class="player">
   <ng-container *ngIf="isLoading"> <span class="loader"></span></ng-container>
   <h2>{{ currentTime | date : "mm : ss" }}</h2>
-  <h2>{{ startTime | date : "EEEE, MMMM dd -  hh : mm : ss" }}</h2>
+  <!-- <h2>{{ startTime | date : "EEEE, MMMM dd -  hh : mm : ss" }}</h2> -->
   <div class="controls">
-    <button class="c-btn button play" (click)="play()">
-      <i class="fa-solid fa-play"></i>PLAY
+    <button class="c-btn button play" mat-flat-button color="accent" (click)="play()">
+      <i class="fa-solid fa-play"></i>&nbsp;PLAY
     </button>
-    <button class="c-btn button stop" (click)="stop()">
-      <i class="fa-solid fa-stop"></i>STOP
+    <button
+      mat-flat-button
+      class="c-btn button stop"
+      (click)="stop()"
+      color="primary"
+    >
+      <i class="fa-solid fa-stop"></i>&nbsp;STOP
     </button>
     <input
       type="range"
@@ -21,11 +26,11 @@
   </div>
 
   <div class="channels">
-    <div
+    <!-- <div
       class="v-line"
       [ngStyle]="{ left: pointerPosition + 'px' }"
       *ngIf="track"
-    ></div>
+    ></div> -->
     <div *ngFor="let channel of gainNodes; let i = index">
       <app-channel
         [duration]="trackTimeLenght"
@@ -33,7 +38,8 @@
         [graph]="visualNodes[i]"
         (muteChannel)="mute(i)"
         (gainChannel)="changeChannelGain($event)"
-        (inited)="trackStart()"
+        (inited)="onChannelReady()"
+        [playbackProgress]="pointerPosition"
       ></app-channel>
     </div>
   </div>

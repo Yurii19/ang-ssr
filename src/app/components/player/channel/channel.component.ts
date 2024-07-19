@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -10,18 +11,20 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-channel',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, MatButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './channel.component.html',
   styleUrl: './channel.component.scss',
 })
-export class ChannelComponent implements AfterViewInit, OnChanges{
+export class ChannelComponent implements AfterViewInit, OnChanges {
   @Input() duration: number = 0;
   @Input() name: number = 0;
+  @Input() playbackProgress: number = 0;
   @Input() graph: Float32Array = new Float32Array();
 
   @Output() muteChannel = new EventEmitter<number>();
@@ -37,18 +40,18 @@ export class ChannelComponent implements AfterViewInit, OnChanges{
 
   isMuted = false;
 
-  canContext : CanvasRenderingContext2D | undefined;
+  canContext: CanvasRenderingContext2D | undefined;
 
   constructor() {}
   ngOnChanges(changes: SimpleChanges): void {
-    this.inited.emit();
-    console.log(changes)
+    if (changes['duration']) {
+      this.inited.emit();
+    }
   }
 
   ngAfterViewInit(): void {
-    
     // console.log(this.graph)
-    const canvasContext = this.createCanvas()
+    const canvasContext = this.createCanvas();
     const canvas = this.myCanvas.nativeElement;
     canvas.width = this.duration * 10;
 
@@ -57,7 +60,6 @@ export class ChannelComponent implements AfterViewInit, OnChanges{
     canvasContext.lineWidth = 1;
     canvasContext.strokeStyle = 'lime';
     const mid = canvas.height / 2;
-
 
     const step = Math.round(this.graph.length / canvas.width);
     // console.log(step)
@@ -74,18 +76,16 @@ export class ChannelComponent implements AfterViewInit, OnChanges{
         canvasContext.stroke();
       }
     });
-
   }
 
-  createCanvas(){
-   const context = this.myCanvas.nativeElement.getContext('2d');
-   return context;
+  createCanvas() {
+    const context = this.myCanvas.nativeElement.getContext('2d');
+    return context;
   }
 
   mute(event: number) {
     this.muteChannel.emit(event);
     this.isMuted = !this.isMuted;
-
   }
 
   changeGain(ev: Event) {

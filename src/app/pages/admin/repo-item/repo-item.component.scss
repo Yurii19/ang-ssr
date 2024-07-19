@@ -1,16 +1,9 @@
-.player {
-  padding: 0 20px;
-}
 
-.controls {
-  display: flex;
-  gap: 10px;
-}
 
-.channels {
-  padding: 20px;
+.mat-mdc-card-header {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  padding: 16px;
   gap: 10px;
 }
 
